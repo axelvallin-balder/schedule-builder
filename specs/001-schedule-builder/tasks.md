@@ -33,14 +33,14 @@
 - [x] T023 Create TeacherAssignment service implementation
 
 ## Phase 3.4: API Endpoints (TDD)
-- [ ] T024 [P] Create course endpoints tests in backend/tests/integration/api/courses.test.ts
-- [ ] T025 [P] Create teacher endpoints tests in backend/tests/integration/api/teachers.test.ts
-- [ ] T026 [P] Create group endpoints tests in backend/tests/integration/api/groups.test.ts
-- [ ] T027 [P] Create schedule endpoints tests in backend/tests/integration/api/schedules.test.ts
-- [ ] T028 Implement course API endpoints
-- [ ] T029 Implement teacher API endpoints
-- [ ] T030 Implement group API endpoints
-- [ ] T031 Implement schedule API endpoints
+- [x] T024 [P] Create course endpoints tests in backend/tests/integration/api/courses.test.ts
+- [x] T025 [P] Create teacher endpoints tests in backend/tests/integration/api/teachers.test.ts
+- [x] T026 [P] Create group endpoints tests in backend/tests/integration/api/groups.test.ts
+- [x] T027 [P] Create schedule endpoints tests in backend/tests/integration/api/schedules.test.ts
+- [x] T028 Implement course API endpoints
+- [x] T029 Implement teacher API endpoints
+- [x] T030 Implement group API endpoints
+- [x] T031 Implement schedule API endpoints
 
 ## Phase 3.5: Frontend Components (TDD)
 - [ ] T032 [P] Create WeeklySchedule component test in frontend/tests/components/schedule/WeeklySchedule.test.ts

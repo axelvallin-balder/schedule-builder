@@ -4,6 +4,7 @@ import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import { config } from 'dotenv';
 import { AppDataSource } from './data-source';
+import { apiRouter } from './api';
 
 config();
 
@@ -19,10 +20,8 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
-// API routes will be added here
-app.use('/api', (req, res) => {
-  res.json({ message: 'API endpoints will be implemented' });
-});
+// API routes
+app.use('/api', apiRouter);
 
 // Create HTTP server
 const server = createServer(app);
