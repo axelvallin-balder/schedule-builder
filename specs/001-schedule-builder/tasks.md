@@ -4,33 +4,33 @@
 **Prerequisites**: plan.md, research.md, data-model.md, contracts/
 
 ## Phase 3.1: Project Setup
-- [ ] T001 Create Nuxt.js project structure with TypeScript
-- [ ] T002 [P] Set up backend directory with necessary dependencies
-- [ ] T003 [P] Set up frontend directory with necessary dependencies
-- [ ] T004 [P] Configure ESLint and Prettier for both frontend and backend
-- [ ] T005 [P] Set up PostgreSQL database and connection
-- [ ] T006 Configure TypeORM with PostgreSQL
-- [ ] T007 Set up testing frameworks (Vitest, Cypress)
-- [ ] T008 Configure WebSocket server setup
-- [ ] T009 Set up development environment variables
+- [x] T001 Create Nuxt.js project structure with TypeScript
+- [x] T002 [P] Set up backend directory with necessary dependencies
+- [x] T003 [P] Set up frontend directory with necessary dependencies
+- [x] T004 [P] Configure ESLint and Prettier for both frontend and backend
+- [x] T005 [P] Set up PostgreSQL database and connection
+- [x] T006 Configure TypeORM with PostgreSQL
+- [x] T007 Set up testing frameworks (Vitest, Cypress)
+- [x] T008 Configure WebSocket server setup
+- [x] T009 Set up development environment variables
 
 ## Phase 3.2: Database Schema and Models (TDD)
-- [ ] T010 [P] Create Course model test in backend/tests/unit/models/Course.test.ts
-- [ ] T011 [P] Create Teacher model test in backend/tests/unit/models/Teacher.test.ts
-- [ ] T012 [P] Create Group model test in backend/tests/unit/models/Group.test.ts
-- [ ] T013 [P] Create Class model test in backend/tests/unit/models/Class.test.ts
-- [ ] T014 [P] Create Subject model test in backend/tests/unit/models/Subject.test.ts
-- [ ] T015 [P] Create Schedule model test in backend/tests/unit/models/Schedule.test.ts
-- [ ] T016 [P] Create Lesson model test in backend/tests/unit/models/Lesson.test.ts
-- [ ] T017 Create database migrations for all models
+- [x] T010 [P] Create Course model test in backend/tests/unit/models/Course.test.ts
+- [x] T011 [P] Create Teacher model test in backend/tests/unit/models/Teacher.test.ts
+- [x] T012 [P] Create Group model test in backend/tests/unit/models/Group.test.ts
+- [x] T013 [P] Create Class model test in backend/tests/unit/models/Class.test.ts
+- [x] T014 [P] Create Subject model test in backend/tests/unit/models/Subject.test.ts
+- [x] T015 [P] Create Schedule model test in backend/tests/unit/models/Schedule.test.ts
+- [x] T016 [P] Create Lesson model test in backend/tests/unit/models/Lesson.test.ts
+- [x] T017 Create database migrations for all models
 
 ## Phase 3.3: Core Algorithm (TDD)
-- [ ] T018 [P] Create ScheduleGenerator test in backend/tests/unit/services/ScheduleGenerator.test.ts
-- [ ] T019 [P] Create RuleValidator test in backend/tests/unit/services/RuleValidator.test.ts
-- [ ] T020 [P] Create TeacherAssignment test in backend/tests/unit/services/TeacherAssignment.test.ts
-- [ ] T021 Create ScheduleGenerator service implementation
-- [ ] T022 Create RuleValidator service implementation
-- [ ] T023 Create TeacherAssignment service implementation
+- [x] T018 [P] Create ScheduleGenerator test in backend/tests/unit/services/ScheduleGenerator.test.ts
+- [x] T019 [P] Create RuleValidator test in backend/tests/unit/services/RuleValidator.test.ts
+- [x] T020 [P] Create TeacherAssignment test in backend/tests/unit/services/TeacherAssignment.test.ts
+- [x] T021 Create ScheduleGenerator service implementation
+- [x] T022 Create RuleValidator service implementation
+- [x] T023 Create TeacherAssignment service implementation
 
 ## Phase 3.4: API Endpoints (TDD)
 - [ ] T024 [P] Create course endpoints tests in backend/tests/integration/api/courses.test.ts
