@@ -1,0 +1,18 @@
+An application that can generate a high school schedule with lessons based on some rules set by the user. 
+The applications consists of two main views. One where the user can view and change the rules. The other where a suggested schedule will be presented as a weekly schedule where the user can manually change it after it has been generated. It should also be possible to generate additional suggested schedules based on the same rules, since the lessons might for example be placed on different days, with different teachers and at different times and still be valid within the rules.
+
+Each course has a teacher. The teacher cannot have multiple lessons at the same time.
+Each course has at least one group of students. The students themselves do not need to be represented in the application, only the groups. A group cannot have multiple lessons at the same time.
+The groups should be assigned to the course by the user before the schedule is generated. 
+The teacher can either be assigned to a course by the user or by the program as the schedule is generated.
+Each course has a subject, and each teacher has a list of subjects that they can be assigned to.
+
+The main way to view the schedule is by class. Each class consists of at least one group.
+A class needs to have at least 30 minutes of lunch if the final lesson finishes after 12:30. The groups in that class can't have any lessons during lunch.
+The groups can be dependent on other groups. Groups that are dependent on each other can't have lessons at the same time.
+Between each lesson (that uses the same group or groups that are dependent on each other) there needs to be at least 10 minutes of break. Some subjects need more, this can be specified by the user.
+
+Each teacher has working hours, the lessons for a course cannot be allocated outside of the assigned teachers working hours. The default working hours are 08:15-16:00.
+
+Each course has an assigned amount of hours each week. The default is 3 hours.
+These hours should be split into multiple lessons per week. The default is 2 lessons.
