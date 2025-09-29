@@ -4,11 +4,11 @@
 **Prerequisites**: plan.md, research.md, data-model.md, contracts/
 
 ## Phase 3.1: Project Setup
-- [x] T001 Create Nuxt.js project structure with TypeScript
-- [x] T002 [P] Set up backend directory with necessary dependencies
-- [x] T003 [P] Set up frontend directory with necessary dependencies
-- [x] T004 [P] Configure ESLint and Prettier for both frontend and backend
-- [x] T005 [P] Set up PostgreSQL database and connection
+- [ ] T001 Create Nuxt.js project structure with TypeScript
+- [ ] T002 [P] Set up backend directory with necessary dependencies
+- [ ] T003 [P] Set up frontend directory with necessary dependencies
+- [ ] T004 [P] Configure ESLint and Prettier for both frontend and backend
+- [ ] T005 [P] Set up PostgreSQL database and connection
 - [ ] T006 Configure TypeORM with PostgreSQL
 - [ ] T007 Set up testing frameworks (Vitest, Cypress)
 - [ ] T008 Configure WebSocket server setup

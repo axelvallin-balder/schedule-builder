@@ -1,3 +1,5 @@
+Initial prompt for the specs:
+
 An application that can generate a high school schedule with lessons based on some rules set by the user. 
 The applications consists of two main views. One where the user can view and change the rules. The other where a suggested schedule will be presented as a weekly schedule where the user can manually change it after it has been generated. It should also be possible to generate additional suggested schedules based on the same rules, since the lessons might for example be placed on different days, with different teachers and at different times and still be valid within the rules.
 
