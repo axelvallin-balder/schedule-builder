@@ -85,9 +85,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Router outlet for child routes -->
-    <RouterView />
   </div>
 </template>
 

@@ -135,22 +135,65 @@ backend/
 │       └── entities/
 
 frontend/
-├── src/
-│   ├── components/    # Vue components
+├── app/              # Nuxt 3 app directory (main application)
+│   ├── app.vue       # Root app component
+│   ├── assets/       # Compiled assets (CSS, images)
+│   ├── components/   # Vue components (auto-imported)
 │   │   ├── schedule/
+│   │   │   ├── WeeklySchedule.vue
+│   │   │   └── LessonCard.vue
 │   │   ├── rules/
-│   │   └── common/
-│   ├── pages/        # Route pages
-│   │   ├── index.vue
-│   │   ├── rules.vue
-│   │   └── schedule.vue
-│   ├── store/        # Pinia stores for state management
-│   │   ├── schedule.ts
-│   │   ├── rules.ts
-│   │   └── ui.ts
-│   └── services/     # API clients
-│       ├── api.ts
-│       └── websocket.ts
+│   │   │   └── RuleEditor.vue
+│   │   ├── modals/
+│   │   │   └── CourseModal.vue
+│   │   └── workflows/
+│   │       ├── ScheduleGenerationWorkflow.vue
+│   │       ├── RuleManagementWorkflow.vue
+│   │       └── CollaborationWorkflow.vue
+│   ├── pages/        # File-based routing (auto-generated routes)
+│   │   ├── index.vue           # Home page (/)
+│   │   ├── schedules.vue       # Schedules list (/schedules)
+│   │   ├── rules.vue           # Rules management (/rules)
+│   │   ├── collaboration.vue   # Collaboration hub (/collaboration)
+│   │   ├── schedules/
+│   │   │   └── generate.vue    # Schedule generation (/schedules/generate)
+│   │   ├── rules/
+│   │   │   └── manage.vue      # Rule management (/rules/manage)
+│   │   └── collaboration/
+│   │       └── session/
+│   │           └── [sessionId].vue  # Collaboration session (/collaboration/session/:id)
+│   ├── stores/       # Pinia stores (auto-imported)
+│   │   ├── index.ts          # Legacy store (being phased out)
+│   │   ├── schedule.ts       # Schedule management store
+│   │   ├── rules.ts          # Rules management store
+│   │   ├── teachers.ts       # Teacher data store
+│   │   ├── groups.ts         # Student groups store
+│   │   └── collaboration.ts  # Real-time collaboration store
+│   └── composables/  # Vue composables (auto-imported)
+│       └── useWebSocket.ts   # WebSocket composable
+├── services/         # API clients and business logic
+│   ├── api.ts        # REST API client
+│   ├── websocket.ts  # WebSocket service
+│   └── conflictResolution.ts
+├── src/              # Additional utilities
+│   ├── accessibility/
+│   │   ├── screen-reader.ts
+│   │   ├── keyboard-navigation.ts
+│   │   └── issues-fixer.ts
+│   └── security/
+│       └── recommendations.ts
+├── public/           # Static assets (served directly)
+│   ├── favicon.ico
+│   └── robots.txt
+├── tests/            # Test files
+│   ├── components/   # Component tests
+│   ├── e2e/         # End-to-end tests
+│   ├── performance/ # Performance tests
+│   ├── accessibility/ # Accessibility tests
+│   └── services/    # Service tests
+├── nuxt.config.ts   # Nuxt configuration
+├── package.json     # Dependencies and scripts
+└── README.md        # Project documentation
 
 tests/
 ├── unit/
@@ -158,7 +201,16 @@ tests/
 └── e2e/
 ```
 
-**Structure Decision**: Using web application structure (frontend + backend) based on Nuxt.js requirements and real-time collaboration needs.
+**Structure Decision**: Using Nuxt 3 full-stack application structure with proper `app/` directory organization. This follows Nuxt 3 conventions for:
+- File-based routing in `app/pages/`
+- Auto-imported components from `app/components/`
+- Auto-imported stores from `app/stores/`
+- Auto-imported composables from `app/composables/`
+- Static assets in `public/`
+- Business logic in `services/` (root level)
+- Utilities in `src/` (root level)
+
+This structure enables Nuxt's automatic imports, proper SSR/SPA support, and optimal development experience with real-time collaboration capabilities.
 
 ## Phase 0: Research & Algorithm Design
 
