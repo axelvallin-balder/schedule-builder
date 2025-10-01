@@ -55,12 +55,30 @@ components/
 │   └── RuleEditor.vue           # Constraint management
 ├── schedule/
 │   ├── LessonCard.vue           # Individual lesson display
-│   └── WeeklySchedule.vue       # Main schedule grid
+│   ├── WeeklySchedule.vue       # Main schedule grid
+│   ├── ScheduleSelector.vue     # Schedule dropdown selector
+│   ├── ClassSelector.vue        # Searchable class picker
+│   ├── CalendarNavigation.vue   # View mode toggle & day selector
+│   ├── CalendarView.vue         # Interactive calendar grid
+│   ├── CalendarLessonCard.vue   # Simplified lesson cards for calendar
+│   └── EnhancedLessonCard.vue   # Adaptive lesson card component
 └── workflows/
     ├── CollaborationWorkflow.vue # Real-time collaboration
     ├── RuleManagementWorkflow.vue # Rule configuration
     └── ScheduleGenerationWorkflow.vue # Schedule creation
 ```
+
+**Calendar Feature Architecture**
+The calendar schedule display feature provides an interactive viewing experience:
+
+- **State Management**: Pinia store (`stores/calendar.ts`) manages selections and data
+- **Service Layer**: `calendarService.ts` handles API integration and data transformation
+- **Type Safety**: Comprehensive TypeScript interfaces in `types/calendar.ts`
+- **Accessibility**: WCAG 2.1 AA compliant with full keyboard navigation
+- **Performance**: Optimized CSS Grid layout for 100+ lesson datasets
+- **Responsive**: Automatic mobile adaptation with day view fallback
+
+**Data Flow**: User Selection → Store Update → API Call → Data Transform → UI Reactivity
 
 **Backend Services**
 ```

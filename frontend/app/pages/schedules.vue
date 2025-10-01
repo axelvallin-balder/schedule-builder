@@ -10,8 +10,34 @@
           </NuxtLink>
         </div>
 
-        <!-- Schedule List -->
-        <div class="space-y-4">
+        <!-- Tab Navigation -->
+        <div class="flex border-b border-gray-200 mb-6">
+          <button 
+            @click="activeTab = 'list'"
+            :class="[
+              'px-6 py-3 font-medium text-sm transition-colors',
+              activeTab === 'list' 
+                ? 'border-b-2 border-blue-500 text-blue-600' 
+                : 'text-gray-500 hover:text-gray-700'
+            ]"
+          >
+            Schedule List
+          </button>
+          <button 
+            @click="activeTab = 'calendar'"
+            :class="[
+              'px-6 py-3 font-medium text-sm transition-colors',
+              activeTab === 'calendar' 
+                ? 'border-b-2 border-blue-500 text-blue-600' 
+                : 'text-gray-500 hover:text-gray-700'
+            ]"
+          >
+            Calendar View
+          </button>
+        </div>
+
+        <!-- Schedule List Tab -->
+        <div v-if="activeTab === 'list'" class="space-y-4">
           <div v-if="schedules.length === 0" class="text-center py-12">
             <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
@@ -42,7 +68,16 @@
                 </div>
               </div>
               <div class="flex space-x-2">
+                <button @click="viewScheduleInCalendar(schedule)" 
+                        title="View in Calendar"
+                        class="text-green-500 hover:text-green-700 p-2">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                </button>
                 <button @click="editSchedule(schedule)" 
+                        title="Edit Schedule"
                         class="text-blue-500 hover:text-blue-700 p-2">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
@@ -50,6 +85,7 @@
                   </svg>
                 </button>
                 <button @click="deleteSchedule(schedule)" 
+                        title="Delete Schedule"
                         class="text-red-500 hover:text-red-700 p-2">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
@@ -58,6 +94,101 @@
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- Calendar View Tab -->
+        <div v-else-if="activeTab === 'calendar'" class="space-y-6">
+          <!-- Error Display -->
+          <div v-if="calendarStore.error" 
+               class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+            {{ calendarStore.error }}
+          </div>
+
+          <!-- Selection Controls -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <ScheduleSelector
+              :schedules="calendarStore.availableSchedules"
+              :selected-schedule-id="calendarStore.selectedScheduleId"
+              :loading="calendarStore.isLoading"
+              @schedule-selected="onScheduleSelected"
+            />
+            
+            <ClassSelector
+              :classes="calendarStore.availableClasses"
+              :selected-class-id="calendarStore.selectedClassId"
+              :loading="calendarStore.isLoading"
+              :disabled="!calendarStore.selectedScheduleId"
+              @class-selected="onClassSelected"
+            />
+          </div>
+
+          <!-- Calendar Navigation -->
+          <CalendarNavigation
+            :current-view-mode="calendarStore.viewMode"
+            :selected-day="calendarStore.selectedDay"
+            :available-days="availableDays"
+            @view-mode-changed="onViewModeChanged"
+            @day-selected="onDaySelected"
+          />
+
+          <!-- Calendar Display -->
+          <CalendarView
+            :current-week="calendarStore.currentCalendarWeek"
+            :view-mode="calendarStore.viewMode"
+            :selected-day-of-week="calendarStore.selectedDay"
+            :loading="calendarStore.isLoading"
+            @lesson-clicked="onLessonClicked"
+          />
+        </div>
+      </div>
+
+      <!-- Lesson Detail Modal -->
+      <div v-if="selectedLesson" 
+           class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+           @click="closeModal">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4" @click.stop>
+          <div class="flex justify-between items-start mb-4">
+            <h3 class="text-lg font-semibold">{{ selectedLesson.subjectName }}</h3>
+            <button @click="closeModal" class="text-gray-400 hover:text-gray-600">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+          
+          <div class="space-y-3">
+            <div>
+              <span class="font-medium text-gray-700">Teacher:</span>
+              <span class="ml-2">{{ selectedLesson.teacherName }}</span>
+            </div>
+            <div>
+              <span class="font-medium text-gray-700">Time:</span>
+              <span class="ml-2">{{ selectedLesson.startTime }} - {{ calculateEndTime(selectedLesson.startTime, selectedLesson.duration) }}</span>
+            </div>
+            <div>
+              <span class="font-medium text-gray-700">Day:</span>
+              <span class="ml-2">{{ getDayName(selectedLesson.dayOfWeek) }}</span>
+            </div>
+            <div>
+              <span class="font-medium text-gray-700">Duration:</span>
+              <span class="ml-2">{{ selectedLesson.duration }} minutes</span>
+            </div>
+            <div v-if="selectedLesson.groupNames.length > 0">
+              <span class="font-medium text-gray-700">Groups:</span>
+              <span class="ml-2">{{ selectedLesson.groupNames.join(', ') }}</span>
+            </div>
+            <div v-if="selectedLesson.roomId">
+              <span class="font-medium text-gray-700">Room:</span>
+              <span class="ml-2">{{ selectedLesson.roomId }}</span>
+            </div>
+          </div>
+          
+          <div class="mt-6 flex justify-end">
+            <button @click="closeModal" 
+                    class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors">
+              Close
+            </button>
           </div>
         </div>
       </div>
@@ -88,8 +219,14 @@
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue'
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
+import { useCalendarStore } from '../stores/calendar'
+import type { CalendarLesson } from '../../types/calendar'
+import ScheduleSelector from '../components/schedule/ScheduleSelector.vue'
+import ClassSelector from '../components/schedule/ClassSelector.vue'
+import CalendarNavigation from '../components/schedule/CalendarNavigation.vue'
+import CalendarView from '../components/schedule/CalendarView.vue'
 
 // Page metadata
 useHead({
@@ -99,7 +236,13 @@ useHead({
   ]
 })
 
+// Stores
+const calendarStore = useCalendarStore()
+
 // Reactive data
+const activeTab = ref('list')
+const selectedLesson = ref<CalendarLesson | null>(null)
+
 const schedules = ref([
   {
     id: '1',
@@ -126,8 +269,14 @@ const performanceMetrics = ref({
   activeUsers: 12
 })
 
-// Methods
-const getStatusClass = (status) => {
+// Computed properties
+const availableDays = computed(() => {
+  if (!calendarStore.currentCalendarWeek) return [1, 2, 3, 4, 5]
+  return calendarStore.currentCalendarWeek.days.map(day => day.dayOfWeek)
+})
+
+// Methods for schedule list
+const getStatusClass = (status: string) => {
   switch (status) {
     case 'active':
       return 'bg-green-100 text-green-800'
@@ -140,13 +289,11 @@ const getStatusClass = (status) => {
   }
 }
 
-const editSchedule = (schedule) => {
-  // Navigate to edit mode or open modal
+const editSchedule = (schedule: any) => {
   console.log('Editing schedule:', schedule.id)
-  // You could navigate to an edit route or open a modal
 }
 
-const deleteSchedule = (schedule) => {
+const deleteSchedule = (schedule: any) => {
   if (confirm(`Are you sure you want to delete "${schedule.name}"?`)) {
     const index = schedules.value.findIndex(s => s.id === schedule.id)
     if (index > -1) {
@@ -155,13 +302,81 @@ const deleteSchedule = (schedule) => {
   }
 }
 
+const viewScheduleInCalendar = async (schedule: any) => {
+  // Switch to calendar tab and select the schedule
+  activeTab.value = 'calendar'
+  await calendarStore.selectSchedule(schedule.id)
+  
+  // Auto-load classes for the selected schedule
+  if (calendarStore.availableClasses.length === 0) {
+    await calendarStore.loadClassOptions()
+  }
+}
+
+// Methods for calendar view
+const onScheduleSelected = async (scheduleId: string) => {
+  await calendarStore.selectSchedule(scheduleId)
+  
+  // Auto-load classes for the selected schedule
+  if (calendarStore.availableClasses.length === 0) {
+    await calendarStore.loadClassOptions()
+  }
+}
+
+const onClassSelected = async (classId: string) => {
+  await calendarStore.selectClass(classId)
+  await loadCalendarData()
+}
+
+const onViewModeChanged = (mode: 'week' | 'day') => {
+  calendarStore.setViewMode(mode)
+}
+
+const onDaySelected = (dayOfWeek: number) => {
+  calendarStore.setSelectedDay(dayOfWeek)
+}
+
+const onLessonClicked = (lesson: CalendarLesson) => {
+  selectedLesson.value = lesson
+}
+
+const closeModal = () => {
+  selectedLesson.value = null
+}
+
+const loadCalendarData = async () => {
+  if (calendarStore.selectedScheduleId && calendarStore.selectedClassId) {
+    await calendarStore.generateCalendarWeek()
+  }
+}
+
+const getDayName = (dayOfWeek: number): string => {
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+  return days[dayOfWeek] || 'Unknown'
+}
+
+const calculateEndTime = (startTime: string, duration: number): string => {
+  const [hours, minutes] = startTime.split(':').map(Number)
+  const startMinutes = (hours || 0) * 60 + (minutes || 0)
+  const endMinutes = startMinutes + duration
+  const endHours = Math.floor(endMinutes / 60)
+  const endMins = endMinutes % 60
+  return `${endHours.toString().padStart(2, '0')}:${endMins.toString().padStart(2, '0')}`
+}
+
 // Load schedules on mount
 onMounted(async () => {
   try {
-    // Here you would typically fetch schedules from the API
-    // const response = await $fetch('/api/schedules')
-    // schedules.value = response
+    // Load initial schedule data
     console.log('Schedules loaded')
+    
+    // Load calendar options if on calendar tab
+    if (activeTab.value === 'calendar') {
+      await Promise.all([
+        calendarStore.loadScheduleOptions(),
+        calendarStore.loadClassOptions()
+      ])
+    }
   } catch (error) {
     console.error('Failed to load schedules:', error)
   }

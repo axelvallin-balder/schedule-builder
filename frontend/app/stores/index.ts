@@ -7,7 +7,7 @@ import {
   groupsApi, 
   subjectsApi,
   type ScheduleGenerationRequest 
-} from '../services/api'
+} from '../../services/api'
 
 // Types
 export interface Lesson {

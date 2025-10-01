@@ -1,5 +1,5 @@
 import { ref, reactive, computed } from 'vue'
-import { useScheduleStore, useRulesStore, useEntitiesStore } from '../stores'
+import { useScheduleStore, useRulesStore, useEntitiesStore } from '../app/stores'
 
 // Types
 export interface WebSocketMessage {

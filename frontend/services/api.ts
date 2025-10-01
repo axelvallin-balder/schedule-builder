@@ -7,7 +7,7 @@ import type {
   Group, 
   Subject,
   Lesson
-} from '../stores'
+} from '../app/stores'
 
 // API Configuration
 const API_BASE_URL = process.env.NUXT_PUBLIC_API_URL || 'http://localhost:3001'
