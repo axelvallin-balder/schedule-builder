@@ -1,4 +1,4 @@
-# Feature Specification: High School Schedul### Requirements
+# Feature Specification: High School Schedule Requirements
 
 ### Testing Requirements
 - System MUST maintain minimum 80% code coverage
@@ -18,7 +18,7 @@
 - System MUST ensure group size limits are respected
 - System MUST validate room capacity constraints
 
-### Functional Requirementsuilder
+### Functional Requirements Builder
 
 **Feature Branch**: `001-schedule-builder`  
 **Created**: 2025-09-29  

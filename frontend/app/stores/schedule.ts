@@ -272,6 +272,58 @@ export const useScheduleStore = defineStore('schedule', {
         selectedGroups: [],
         selectedSubjects: []
       }
+    },
+
+    // Calendar integration methods
+    getLessonsForCalendarDisplay(scheduleId: string) {
+      const schedule = this.schedules.find(s => s.id === scheduleId)
+      if (!schedule) return []
+
+      // Filter lessons for calendar display (Monday-Friday, 8:00-16:00)
+      return schedule.lessons.filter(lesson => 
+        lesson.dayOfWeek >= 1 && lesson.dayOfWeek <= 5 &&
+        timeToMinutes(lesson.startTime) >= timeToMinutes('08:00') &&
+        timeToMinutes(lesson.startTime) <= timeToMinutes('16:00')
+      )
+    },
+
+    getLessonsByDay(scheduleId: string, dayOfWeek: number) {
+      const lessons = this.getLessonsForCalendarDisplay(scheduleId)
+      return lessons
+        .filter(lesson => lesson.dayOfWeek === dayOfWeek)
+        .sort((a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime))
+    },
+
+    getLessonsByTimeSlot(scheduleId: string, dayOfWeek: number, startTime: string, duration: number = 15) {
+      const slotStart = timeToMinutes(startTime)
+      const slotEnd = slotStart + duration
+      
+      return this.getLessonsForCalendarDisplay(scheduleId).filter(lesson => {
+        if (lesson.dayOfWeek !== dayOfWeek) return false
+        
+        const lessonStart = timeToMinutes(lesson.startTime)
+        const lessonEnd = lessonStart + lesson.duration
+        
+        // Check if lesson overlaps with time slot
+        return lessonStart < slotEnd && lessonEnd > slotStart
+      })
+    },
+
+    getScheduleById(id: string) {
+      return this.schedules.find(s => s.id === id) || null
+    },
+
+    // Calendar-specific getters for active schedules
+    getActiveSchedulesForCalendar() {
+      return this.schedules
+        .filter(s => s.status === 'active')
+        .map(s => ({
+          id: s.id,
+          name: s.name,
+          weekNumber: s.weekNumber,
+          year: s.year,
+          lessonCount: s.lessons.length
+        }))
     }
   }
 })

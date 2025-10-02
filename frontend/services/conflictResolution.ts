@@ -1,6 +1,6 @@
 import { ref, reactive, computed } from 'vue'
 import type { ConflictData, ScheduleUpdate, WebSocketService } from './websocket'
-import type { Lesson, Schedule } from '../stores'
+import type { Lesson, Schedule } from '../app/stores'
 
 // Types for conflict resolution
 export interface ConflictResolution {
