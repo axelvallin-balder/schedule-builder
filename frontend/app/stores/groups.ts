@@ -86,7 +86,9 @@ export const useGroupsStore = defineStore('groups', {
       this.error = null
       try {
         const response = await groupsApi.getAll()
-        this.groups = response.data
+        console.log(response)
+        // Handle paginated response structure with data field
+        this.groups = response.data || []
       } catch (error: any) {
         this.error = error.message || 'Failed to load groups'
         console.error('Failed to load groups:', error)

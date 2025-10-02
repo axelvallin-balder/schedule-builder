@@ -55,8 +55,8 @@
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
 
 ### Backend Updates (Minimal)
-- [ ] T014 Update Group model to support classIds array in `backend/src/models/Group.ts`
-- [ ] T015 Update Group API endpoints for many-to-many relationships in `backend/src/api/routes/groups.ts`
+- [x] T014 Update Group model to support classIds array in `backend/src/models/Group.ts`
+- [x] T015 Update Group API endpoints for many-to-many relationships in `backend/src/api/routes/groups.ts`
 
 ### Frontend Stores
 - [x] T016 [P] ~~Create entities store in `frontend/app/stores/entities.ts`~~ **COMPLETED: Enhanced existing consolidated store in `frontend/app/stores/index.ts`**
@@ -64,7 +64,7 @@
 - [x] T018 [P] ~~Create teachers store in `frontend/app/stores/teachers.ts`~~ **COMPLETED: Enhanced existing store with validation, bulk operations, and selection management**
 - [x] T019 [P] ~~Create subjects store in `frontend/app/stores/subjects.ts`~~ **COMPLETED: Created new store with full CRUD, validation, and bulk operations**
 - [x] T020 [P] ~~Create courses store in `frontend/app/stores/courses.ts`~~ **COMPLETED: Created new store with full CRUD, validation, and bulk operations**
-- [ ] T021 [P] Create classes store in `frontend/app/stores/classes.ts`
+- [x] T021 [P] Create classes store in `frontend/app/stores/classes.ts`
 
 #### Store Consolidation Strategy (T016-T020 Implementation Notes)
 
@@ -90,12 +90,12 @@
 **Future Migration Path**: Foundation established for gradual migration to comprehensive entity types when business requirements justify the additional complexity.
 
 ### Frontend Components
-- [ ] T022 Create reusable EntityForm component in `frontend/app/components/entities/EntityForm.vue`
-- [ ] T023 [P] Create GroupManager component in `frontend/app/components/entities/GroupManager.vue`
-- [ ] T024 [P] Create TeacherManager component in `frontend/app/components/entities/TeacherManager.vue`
-- [ ] T025 [P] Create SubjectManager component in `frontend/app/components/entities/SubjectManager.vue`
-- [ ] T026 [P] Create CourseManager component in `frontend/app/components/entities/CourseManager.vue`
-- [ ] T027 [P] Create ClassManager component in `frontend/app/components/entities/ClassManager.vue`
+- [x] T022 Create reusable EntityForm component in `frontend/app/components/entities/EntityForm.vue`
+- [x] T023 [P] Create GroupManager component in `frontend/app/components/entities/GroupManager.vue`
+- [x] T024 [P] Create TeacherManager component in `frontend/app/components/entities/TeacherManager.vue`
+- [x] T025 [P] Create SubjectManager component in `frontend/app/components/entities/SubjectManager.vue`
+- [x] T026 [P] Create CourseManager component in `frontend/app/components/entities/CourseManager.vue`
+- [x] T027 [P] Create ClassManager component in `frontend/app/components/entities/ClassManager.vue`
 
 ## Phase 3.4: Integration
 - [ ] T028 Enhance rules management page with entity tabs in `frontend/app/pages/rules.vue`

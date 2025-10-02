@@ -86,7 +86,8 @@ export const useCoursesStore = defineStore('courses', {
       this.error = null
       try {
         const response = await coursesApi.getAll()
-        this.courses = response.data
+        // Handle paginated response structure - response is the paginated object directly
+        this.courses = response.courses || []
       } catch (error: any) {
         this.error = error.message || 'Failed to load courses'
         console.error('Failed to load courses:', error)

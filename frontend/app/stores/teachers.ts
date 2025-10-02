@@ -77,7 +77,9 @@ export const useTeachersStore = defineStore('teachers', {
       this.error = null
       try {
         const response = await teachersApi.getAll()
-        this.teachers = response.data
+        console.log(response)
+        // Handle paginated response structure - response is the paginated object directly
+        this.teachers = response.teachers || []
       } catch (error: any) {
         this.error = error.message || 'Failed to load teachers'
         console.error('Failed to load teachers:', error)

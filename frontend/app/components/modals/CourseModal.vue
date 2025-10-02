@@ -79,7 +79,7 @@
                   v-model="courseData.groupIds"
                   data-testid="group-checkbox"
                 />
-                <span>{{ group.name }} ({{ group.size }} students)</span>
+                <span>{{ group.name }} ({{ group.studentCount }} students)</span>
               </label>
             </div>
           </div>
@@ -117,8 +117,8 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { useTeacherStore } from '~/stores/teachers'
-import { useGroupStore } from '~/stores/groups'
+import { useTeachersStore } from '~/stores/teachers'
+import { useGroupsStore } from '~/stores/groups'
 
 // Props and emits
 const props = defineProps<{
@@ -131,8 +131,8 @@ const emit = defineEmits<{
 }>()
 
 // Store instances
-const teacherStore = useTeacherStore()
-const groupStore = useGroupStore()
+const teacherStore = useTeachersStore()
+const groupStore = useGroupsStore()
 
 // Form data
 const courseData = ref({

@@ -79,8 +79,9 @@ export interface Group {
 export interface Subject {
   id: string
   name: string
-  code: string
-  color: string
+  breakDuration: number
+  createdAt?: string
+  updatedAt?: string
 }
 
 // Schedule Store

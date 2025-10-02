@@ -8,9 +8,10 @@ import type {
   Subject,
   Lesson
 } from '../app/stores'
+import type { Class } from '../app/types/entities'
 
 // API Configuration
-const API_BASE_URL = process.env.NUXT_PUBLIC_API_URL || 'http://localhost:3001'
+const API_BASE_URL = process.env.NUXT_PUBLIC_API_URL || 'http://localhost:3001/api'
 
 // Types for API requests/responses
 export interface ApiResponse<T> {
@@ -262,8 +263,20 @@ export const rulesApi = {
 
 // Courses API
 export const coursesApi = {
-  async getAll(): Promise<ApiResponse<Course[]>> {
-    return apiClient.get<ApiResponse<Course[]>>('/courses')
+  async getAll(): Promise<{
+    courses: Course[]
+    total: number
+    page: number
+    pageSize: number
+    totalPages: number
+  }> {
+    return apiClient.get<{
+      courses: Course[]
+      total: number
+      page: number
+      pageSize: number
+      totalPages: number
+    }>('/courses')
   },
 
   async getById(id: string): Promise<ApiResponse<Course>> {
@@ -285,8 +298,20 @@ export const coursesApi = {
 
 // Teachers API
 export const teachersApi = {
-  async getAll(): Promise<ApiResponse<Teacher[]>> {
-    return apiClient.get<ApiResponse<Teacher[]>>('/teachers')
+  async getAll(): Promise<{
+    teachers: Teacher[]
+    total: number
+    page: number
+    pageSize: number
+    totalPages: number
+  }> {
+    return apiClient.get<{
+      teachers: Teacher[]
+      total: number
+      page: number
+      pageSize: number
+      totalPages: number
+    }>('/teachers')
   },
 
   async getById(id: string): Promise<ApiResponse<Teacher>> {
@@ -321,8 +346,24 @@ export const teachersApi = {
 
 // Groups API
 export const groupsApi = {
-  async getAll(): Promise<ApiResponse<Group[]>> {
-    return apiClient.get<ApiResponse<Group[]>>('/groups')
+  async getAll(): Promise<{
+    data: Group[]
+    pagination: {
+      page: number
+      limit: number
+      total: number
+      totalPages: number
+    }
+  }> {
+    return apiClient.get<{
+      data: Group[]
+      pagination: {
+        page: number
+        limit: number
+        total: number
+        totalPages: number
+      }
+    }>('/groups')
   },
 
   async getById(id: string): Promise<ApiResponse<Group>> {
@@ -344,8 +385,8 @@ export const groupsApi = {
 
 // Subjects API
 export const subjectsApi = {
-  async getAll(): Promise<ApiResponse<Subject[]>> {
-    return apiClient.get<ApiResponse<Subject[]>>('/subjects')
+  async getAll(): Promise<Subject[]> {
+    return apiClient.get<Subject[]>('/subjects')
   },
 
   async getById(id: string): Promise<ApiResponse<Subject>> {
@@ -389,6 +430,29 @@ export const lessonsApi = {
     endTime: string
   }): Promise<ApiResponse<Lesson>> {
     return apiClient.patch<ApiResponse<Lesson>>(`/schedules/${scheduleId}/lessons/${lessonId}/move`, newTimeSlot)
+  }
+}
+
+// Classes API
+export const classesApi = {
+  async getAll(): Promise<Class[]> {
+    return apiClient.get<Class[]>('/classes')
+  },
+
+  async getById(id: string): Promise<ApiResponse<any>> {
+    return apiClient.get<ApiResponse<any>>(`/classes/${id}`)
+  },
+
+  async create(classData: any): Promise<ApiResponse<any>> {
+    return apiClient.post<ApiResponse<any>>('/classes', classData)
+  },
+
+  async update(id: string, classData: any): Promise<ApiResponse<any>> {
+    return apiClient.put<ApiResponse<any>>(`/classes/${id}`, classData)
+  },
+
+  async delete(id: string): Promise<ApiResponse<void>> {
+    return apiClient.delete<ApiResponse<void>>(`/classes/${id}`)
   }
 }
 

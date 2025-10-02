@@ -11,7 +11,7 @@ export class Course {
   @Column({ name: 'subject_id' })
   subjectId!: string;
 
-  @Column({ name: 'teacher_id', nullable: true })
+  @Column({ type: 'varchar', name: 'teacher_id', nullable: true })
   teacherId!: string | null;
 
   @Column('simple-array', { name: 'group_ids' })

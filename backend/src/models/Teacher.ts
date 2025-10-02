@@ -19,7 +19,7 @@ export class Teacher {
   subjectIds!: string[];
 
   @Column('jsonb', { name: 'working_hours', default: { start: '08:15', end: '16:00' } })
-  workingHours!: WorkingHours;
+  workingHours!: { start: string; end: string };
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;

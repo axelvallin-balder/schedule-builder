@@ -8,19 +8,15 @@ interface ValidationResult {
   errors: Array<{ field: string; message: string }>
 }
 
-function validateSubject(subjectData: Omit<Subject, 'id'>): ValidationResult {
+function validateSubject(subjectData: Omit<Subject, 'id' | 'createdAt' | 'updatedAt'>): ValidationResult {
   const errors: Array<{ field: string; message: string }> = []
   
   if (!subjectData.name || subjectData.name.trim().length === 0) {
     errors.push({ field: 'name', message: 'Name is required' })
   }
   
-  if (!subjectData.code || subjectData.code.trim().length === 0) {
-    errors.push({ field: 'code', message: 'Code is required' })
-  }
-  
-  if (!subjectData.color || !subjectData.color.match(/^#[0-9A-Fa-f]{6}$/)) {
-    errors.push({ field: 'color', message: 'Valid hex color is required' })
+  if (subjectData.breakDuration < 0 || subjectData.breakDuration > 60) {
+    errors.push({ field: 'breakDuration', message: 'Break duration must be between 0 and 60 minutes' })
   }
   
   return {
@@ -54,18 +50,14 @@ export const useSubjectsStore = defineStore('subjects', {
       
       const query = state.searchQuery.toLowerCase()
       return state.subjects.filter(subject => 
-        subject.name.toLowerCase().includes(query) ||
-        subject.code.toLowerCase().includes(query)
+        subject.name.toLowerCase().includes(query)
       )
     },
 
     selectedSubjectsCount: (state) => state.selectedIds.length,
 
     getSubjectById: (state) => (id: string) => 
-      state.subjects.find(subject => subject.id === id),
-
-    getSubjectByCode: (state) => (code: string) => 
-      state.subjects.find(subject => subject.code === code)
+      state.subjects.find(subject => subject.id === id)
   },
 
   actions: {
@@ -74,7 +66,8 @@ export const useSubjectsStore = defineStore('subjects', {
       this.error = null
       try {
         const response = await subjectsApi.getAll()
-        this.subjects = response.data
+        // Subjects API returns direct array, not wrapped
+        this.subjects = response || []
       } catch (error: any) {
         this.error = error.message || 'Failed to load subjects'
         console.error('Failed to load subjects:', error)
@@ -84,7 +77,7 @@ export const useSubjectsStore = defineStore('subjects', {
       }
     },
 
-    async createSubject(subjectData: Omit<Subject, 'id'>) {
+    async createSubject(subjectData: Omit<Subject, 'id' | 'createdAt' | 'updatedAt'>) {
       const validation = validateSubject(subjectData)
       if (!validation.valid) {
         throw new Error(`Validation failed: ${validation.errors.map(e => e.message).join(', ')}`)
@@ -132,7 +125,7 @@ export const useSubjectsStore = defineStore('subjects', {
       }
     },
 
-    async bulkCreate(subjects: Omit<Subject, 'id'>[]) {
+    async bulkCreate(subjects: Omit<Subject, 'id' | 'createdAt' | 'updatedAt'>[]) {
       const results = []
       for (const subjectData of subjects) {
         try {
