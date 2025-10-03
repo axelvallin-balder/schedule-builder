@@ -4,7 +4,7 @@
       <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
         <div class="flex justify-between items-center mb-6">
           <h1 class="text-3xl font-bold">Schedule Management</h1>
-          <NuxtLink to="/schedules/generate" 
+          <NuxtLink to="/generate-schedule" 
                    class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">
             Generate New Schedule
           </NuxtLink>
@@ -45,7 +45,7 @@
             </svg>
             <h3 class="text-xl font-semibold text-gray-600 mb-2">No Schedules Yet</h3>
             <p class="text-gray-500 mb-4">Create your first schedule to get started</p>
-            <NuxtLink to="/schedules/generate" 
+            <NuxtLink to="/generate-schedule" 
                      class="inline-block bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">
               Create Schedule
             </NuxtLink>

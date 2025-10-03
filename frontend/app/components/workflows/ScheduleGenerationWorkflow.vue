@@ -671,6 +671,73 @@ import { useRuleStore } from '~/stores/rules'
 import WeeklySchedule from '~/components/schedule/WeeklySchedule.vue'
 import CourseModal from '~/components/modals/CourseModal.vue'
 
+// Type definitions
+interface Course {
+  id: string
+  name: string
+  teacherId: string
+  groupIds: string[]
+  weeklyHours: number
+  subjectId?: string
+}
+
+interface GenerationStatus {
+  phase: string
+  description: string
+  iterations: number
+  bestScore: number | null
+  elapsedTime: number
+}
+
+interface LogEntry {
+  timestamp: string
+  message: string
+  type: 'info' | 'warning' | 'error'
+}
+
+interface ScheduleAlternative {
+  id: string
+  score: number | null
+  lessons: any[]
+}
+
+interface GenerationResults {
+  success: boolean
+  error?: string
+  totalTime: number
+  iterations: number
+  finalScore?: number | null
+  warnings: string[]
+  alternatives: ScheduleAlternative[]
+}
+
+interface ScheduleData {
+  name: string
+  academicYear: string
+  semester: string
+  description: string
+  courses: Course[]
+  constraints: {
+    workingHours: {
+      start: string
+      end: string
+    }
+    lessonDuration: number
+    breakDuration: number
+    maxLessonsPerDay: number
+    maxSameSubjectPerDay: number
+  }
+  generationOptions: {
+    algorithm: string
+    useRandomization: boolean
+    generateAlternatives: boolean
+    maxAlternatives: number
+    maxIterations: number
+    timeLimit: number
+  }
+  activeRuleIds: string[]
+}
+
 // Store instances
 const scheduleStore = useScheduleStore()
 const teacherStore = useTeachersStore()
@@ -681,7 +748,7 @@ const ruleStore = useRuleStore()
 const currentStep = ref(0)
 const isGenerating = ref(false)
 const showAddCourseModal = ref(false)
-const editingCourse = ref(null)
+const editingCourse = ref<Course | null>(null)
 const selectedAlternative = ref(0)
 
 // Workflow steps definition
@@ -696,7 +763,7 @@ const workflowSteps = [
 ]
 
 // Schedule data
-const scheduleData = ref({
+const scheduleData = ref<ScheduleData>({
   name: '',
   academicYear: '',
   semester: '',
@@ -725,15 +792,15 @@ const scheduleData = ref({
 
 // Generation state
 const generationProgress = ref(0)
-const generationStatus = ref({
+const generationStatus = ref<GenerationStatus>({
   phase: 'Initializing',
   description: 'Setting up generation parameters...',
   iterations: 0,
   bestScore: null,
   elapsedTime: 0
 })
-const generationLog = ref([])
-const generationResults = ref(null)
+const generationLog = ref<LogEntry[]>([])
+const generationResults = ref<GenerationResults | null>(null)
 
 // Computed properties
 const availableYears = computed(() => {
@@ -741,11 +808,22 @@ const availableYears = computed(() => {
   return Array.from({ length: 5 }, (_, i) => currentYear + i)
 })
 
-const activeRules = computed(() => ruleStore.rules.filter(rule => rule.active))
+const activeRules = computed(() => ruleStore.rules.filter(rule => rule.enabled))
 
 const selectedSchedule = computed(() => {
   if (!generationResults.value?.alternatives) return null
-  return generationResults.value.alternatives[selectedAlternative.value]
+  const alternative = generationResults.value.alternatives[selectedAlternative.value]
+  if (!alternative) return null
+  
+  // Convert ScheduleAlternative to Schedule format expected by WeeklySchedule component
+  return {
+    id: alternative.id,
+    name: scheduleData.value.name || 'Generated Schedule',
+    weekNumber: Math.ceil(new Date().getDate() / 7),
+    year: new Date().getFullYear(),
+    status: 'draft' as const,
+    lessons: alternative.lessons
+  }
 })
 
 // Methods
@@ -773,19 +851,24 @@ const getGroupNames = (groupIds: string[]) => {
   })
 }
 
-const saveCourse = (courseData: any) => {
+const saveCourse = (courseData: Partial<Course>) => {
   if (editingCourse.value) {
     // Update existing course
-    const index = scheduleData.value.courses.findIndex(c => c.id === editingCourse.value.id)
+    const index = scheduleData.value.courses.findIndex(c => c.id === editingCourse.value!.id)
     if (index !== -1) {
-      scheduleData.value.courses[index] = { ...courseData }
+      scheduleData.value.courses[index] = { ...editingCourse.value, ...courseData }
     }
   } else {
     // Add new course
-    scheduleData.value.courses.push({
+    const newCourse: Course = {
       id: Date.now().toString(),
-      ...courseData
-    })
+      name: courseData.name || '',
+      teacherId: courseData.teacherId || '',
+      groupIds: courseData.groupIds || [],
+      weeklyHours: courseData.weeklyHours || 0,
+      subjectId: courseData.subjectId
+    }
+    scheduleData.value.courses.push(newCourse)
   }
   closeModal()
 }
@@ -820,7 +903,7 @@ const generateSchedule = async () => {
     console.error('Generation failed:', error)
     generationResults.value = {
       success: false,
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
       totalTime: generationStatus.value.elapsedTime,
       iterations: generationStatus.value.iterations,
       warnings: [],
@@ -834,7 +917,7 @@ const generateSchedule = async () => {
 
 const simulateGeneration = async () => {
   const startTime = Date.now()
-  const phases = [
+  const phases: string[] = [
     'Initializing parameters',
     'Loading course data',
     'Applying constraints',
@@ -844,13 +927,13 @@ const simulateGeneration = async () => {
   ]
   
   for (let i = 0; i < phases.length; i++) {
-    generationStatus.value.phase = phases[i]
-    generationStatus.value.description = `Processing ${phases[i].toLowerCase()}...`
+    generationStatus.value.phase = phases[i]!
+    generationStatus.value.description = `Processing ${phases[i]!.toLowerCase()}...`
     
     // Add log entry
     generationLog.value.push({
       timestamp: new Date().toLocaleTimeString(),
-      message: phases[i],
+      message: phases[i]!,
       type: 'info'
     })
     
@@ -898,9 +981,10 @@ const startOver = () => {
 
 const saveSchedule = async () => {
   try {
-    await scheduleStore.createSchedule({
-      ...scheduleData.value,
-      schedule: selectedSchedule.value
+    await scheduleStore.saveSchedule({
+      name: scheduleData.value.name,
+      lessons: selectedSchedule.value?.lessons || [],
+      status: 'draft'
     })
     
     // Navigate to schedules page or show success message
@@ -913,9 +997,9 @@ const saveSchedule = async () => {
 // Initialize data on mount
 onMounted(async () => {
   await Promise.all([
-    teacherStore.fetchTeachers(),
-    groupStore.fetchGroups(),
-    ruleStore.fetchRules()
+    teacherStore.loadTeachers(),
+    groupStore.loadGroups(),
+    ruleStore.loadRules()
   ])
 })
 </script>
