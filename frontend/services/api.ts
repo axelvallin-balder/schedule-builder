@@ -8,9 +8,10 @@ import type {
   Subject,
   Lesson
 } from '../app/stores'
+import type { Class } from '../app/types/entities'
 
 // API Configuration
-const API_BASE_URL = process.env.NUXT_PUBLIC_API_URL || 'http://localhost:3001'
+const API_BASE_URL = process.env.NUXT_PUBLIC_API_URL || 'http://localhost:3001/api'
 
 // Types for API requests/responses
 export interface ApiResponse<T> {
@@ -84,7 +85,18 @@ class ApiClient {
       )
     }
 
-    return response.json()
+    // Handle 204 No Content responses (empty body)
+    if (response.status === 204 || response.headers.get('content-length') === '0') {
+      return undefined as T
+    }
+
+    // Check if response has content before trying to parse JSON
+    const contentType = response.headers.get('content-type')
+    if (contentType && contentType.includes('application/json')) {
+      return response.json()
+    }
+
+    return undefined as T
   }
 
   async get<T>(endpoint: string, params?: Record<string, any>): Promise<T> {
@@ -178,8 +190,9 @@ export const schedulesApi = {
     return apiClient.put<ApiResponse<Schedule>>(`/schedules/${id}`, scheduleData)
   },
 
-  async delete(id: string): Promise<ApiResponse<void>> {
-    return apiClient.delete<ApiResponse<void>>(`/schedules/${id}`)
+  async delete(id: string): Promise<void> {
+    // TODO: Implement in backend
+    throw new Error('Delete schedule endpoint not implemented in backend')
   },
 
   async generate(request: ScheduleGenerationRequest): Promise<ApiResponse<ScheduleGenerationResponse>> {
@@ -236,8 +249,9 @@ export const rulesApi = {
     return apiClient.put<ApiResponse<Rule>>(`/rules/${id}`, ruleData)
   },
 
-  async delete(id: string): Promise<ApiResponse<void>> {
-    return apiClient.delete<ApiResponse<void>>(`/rules/${id}`)
+  async delete(id: string): Promise<void> {
+    // TODO: Implement in backend
+    throw new Error('Delete rule endpoint not implemented in backend')
   },
 
   async toggle(id: string, enabled: boolean): Promise<ApiResponse<Rule>> {
@@ -262,47 +276,72 @@ export const rulesApi = {
 
 // Courses API
 export const coursesApi = {
-  async getAll(): Promise<ApiResponse<Course[]>> {
-    return apiClient.get<ApiResponse<Course[]>>('/courses')
+  async getAll(): Promise<{
+    courses: Course[]
+    total: number
+    page: number
+    pageSize: number
+    totalPages: number
+  }> {
+    return apiClient.get<{
+      courses: Course[]
+      total: number
+      page: number
+      pageSize: number
+      totalPages: number
+    }>('/courses')
   },
 
   async getById(id: string): Promise<ApiResponse<Course>> {
     return apiClient.get<ApiResponse<Course>>(`/courses/${id}`)
   },
 
-  async create(courseData: Omit<Course, 'id'>): Promise<ApiResponse<Course>> {
-    return apiClient.post<ApiResponse<Course>>('/courses', courseData)
+  async create(courseData: Omit<Course, 'id'>): Promise<{course: Course}> {
+    return apiClient.post<{course: Course}>('/courses', courseData)
   },
 
-  async update(id: string, courseData: Partial<Course>): Promise<ApiResponse<Course>> {
-    return apiClient.put<ApiResponse<Course>>(`/courses/${id}`, courseData)
+  async update(id: string, courseData: Partial<Course>): Promise<{course: Course}> {
+    return apiClient.put<{course: Course}>(`/courses/${id}`, courseData)
   },
 
-  async delete(id: string): Promise<ApiResponse<void>> {
-    return apiClient.delete<ApiResponse<void>>(`/courses/${id}`)
+  async delete(id: string): Promise<void> {
+    // TODO: Implement in backend
+    throw new Error('Delete course endpoint not implemented in backend')
   }
 }
 
 // Teachers API
 export const teachersApi = {
-  async getAll(): Promise<ApiResponse<Teacher[]>> {
-    return apiClient.get<ApiResponse<Teacher[]>>('/teachers')
+  async getAll(): Promise<{
+    teachers: Teacher[]
+    total: number
+    page: number
+    pageSize: number
+    totalPages: number
+  }> {
+    return apiClient.get<{
+      teachers: Teacher[]
+      total: number
+      page: number
+      pageSize: number
+      totalPages: number
+    }>('/teachers')
   },
 
   async getById(id: string): Promise<ApiResponse<Teacher>> {
     return apiClient.get<ApiResponse<Teacher>>(`/teachers/${id}`)
   },
 
-  async create(teacherData: Omit<Teacher, 'id'>): Promise<ApiResponse<Teacher>> {
-    return apiClient.post<ApiResponse<Teacher>>('/teachers', teacherData)
+  async create(teacherData: Omit<Teacher, 'id'>): Promise<{ teacher: Teacher }> {
+    return apiClient.post<{ teacher: Teacher }>('/teachers', teacherData)
   },
 
-  async update(id: string, teacherData: Partial<Teacher>): Promise<ApiResponse<Teacher>> {
-    return apiClient.put<ApiResponse<Teacher>>(`/teachers/${id}`, teacherData)
+  async update(id: string, teacherData: Partial<Teacher>): Promise<{ teacher: Teacher }> {
+    return apiClient.put<{ teacher: Teacher }>(`/teachers/${id}`, teacherData)
   },
 
-  async delete(id: string): Promise<ApiResponse<void>> {
-    return apiClient.delete<ApiResponse<void>>(`/teachers/${id}`)
+  async delete(id: string): Promise<void> {
+    return apiClient.delete<void>(`/teachers/${id}`)
   },
 
   async getAvailability(id: string, date?: string): Promise<ApiResponse<{
@@ -321,8 +360,24 @@ export const teachersApi = {
 
 // Groups API
 export const groupsApi = {
-  async getAll(): Promise<ApiResponse<Group[]>> {
-    return apiClient.get<ApiResponse<Group[]>>('/groups')
+  async getAll(): Promise<{
+    data: Group[]
+    pagination: {
+      page: number
+      limit: number
+      total: number
+      totalPages: number
+    }
+  }> {
+    return apiClient.get<{
+      data: Group[]
+      pagination: {
+        page: number
+        limit: number
+        total: number
+        totalPages: number
+      }
+    }>('/groups')
   },
 
   async getById(id: string): Promise<ApiResponse<Group>> {
@@ -337,31 +392,31 @@ export const groupsApi = {
     return apiClient.put<ApiResponse<Group>>(`/groups/${id}`, groupData)
   },
 
-  async delete(id: string): Promise<ApiResponse<void>> {
-    return apiClient.delete<ApiResponse<void>>(`/groups/${id}`)
+  async delete(id: string): Promise<{ message: string }> {
+    return apiClient.delete<{ message: string }>(`/groups/${id}`)
   }
 }
 
 // Subjects API
 export const subjectsApi = {
-  async getAll(): Promise<ApiResponse<Subject[]>> {
-    return apiClient.get<ApiResponse<Subject[]>>('/subjects')
+  async getAll(): Promise<Subject[]> {
+    return apiClient.get<Subject[]>('/subjects')
   },
 
   async getById(id: string): Promise<ApiResponse<Subject>> {
     return apiClient.get<ApiResponse<Subject>>(`/subjects/${id}`)
   },
 
-  async create(subjectData: Omit<Subject, 'id'>): Promise<ApiResponse<Subject>> {
-    return apiClient.post<ApiResponse<Subject>>('/subjects', subjectData)
+  async create(subjectData: Omit<Subject, 'id'>): Promise<Subject> {
+    return apiClient.post<Subject>('/subjects', subjectData)
   },
 
-  async update(id: string, subjectData: Partial<Subject>): Promise<ApiResponse<Subject>> {
-    return apiClient.put<ApiResponse<Subject>>(`/subjects/${id}`, subjectData)
+  async update(id: string, subjectData: Partial<Subject>): Promise<Subject> {
+    return apiClient.put<Subject>(`/subjects/${id}`, subjectData)
   },
 
-  async delete(id: string): Promise<ApiResponse<void>> {
-    return apiClient.delete<ApiResponse<void>>(`/subjects/${id}`)
+  async delete(id: string): Promise<void> {
+    return apiClient.delete<void>(`/subjects/${id}`)
   }
 }
 
@@ -379,8 +434,9 @@ export const lessonsApi = {
     return apiClient.put<ApiResponse<Lesson>>(`/schedules/${scheduleId}/lessons/${lessonId}`, lessonData)
   },
 
-  async delete(scheduleId: string, lessonId: string): Promise<ApiResponse<void>> {
-    return apiClient.delete<ApiResponse<void>>(`/schedules/${scheduleId}/lessons/${lessonId}`)
+  async delete(scheduleId: string, lessonId: string): Promise<void> {
+    // TODO: Implement in backend
+    throw new Error('Delete lesson endpoint not implemented in backend')
   },
 
   async move(scheduleId: string, lessonId: string, newTimeSlot: {
@@ -389,6 +445,29 @@ export const lessonsApi = {
     endTime: string
   }): Promise<ApiResponse<Lesson>> {
     return apiClient.patch<ApiResponse<Lesson>>(`/schedules/${scheduleId}/lessons/${lessonId}/move`, newTimeSlot)
+  }
+}
+
+// Classes API
+export const classesApi = {
+  async getAll(): Promise<Class[]> {
+    return apiClient.get<Class[]>('/classes')
+  },
+
+  async getById(id: string): Promise<Class> {
+    return apiClient.get<Class>(`/classes/${id}`)
+  },
+
+  async create(classData: Omit<Class, 'id' | 'createdAt' | 'updatedAt'>): Promise<Class> {
+    return apiClient.post<Class>('/classes', classData)
+  },
+
+  async update(id: string, classData: Partial<Class>): Promise<Class> {
+    return apiClient.put<Class>(`/classes/${id}`, classData)
+  },
+
+  async delete(id: string): Promise<void> {
+    return apiClient.delete<void>(`/classes/${id}`)
   }
 }
 

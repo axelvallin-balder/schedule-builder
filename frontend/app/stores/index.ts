@@ -50,11 +50,13 @@ export interface RuleCondition {
 
 export interface Course {
   id: string
-  name: string
   subjectId: string
-  lessonsPerWeek: number
-  duration: number // minutes
+  teacherId: string | null
   groupIds: string[]
+  weeklyHours: number
+  numberOfLessons: number
+  createdAt: Date
+  updatedAt: Date
 }
 
 export interface Teacher {
@@ -72,15 +74,30 @@ export interface Teacher {
 export interface Group {
   id: string
   name: string
-  year: number
-  studentCount: number
+  classIds: string[]
+  dependentGroupIds: string[]
+  size?: number
+  academicLevel?: string
+  createdAt: Date
+  updatedAt: Date
 }
 
 export interface Subject {
   id: string
   name: string
-  code: string
-  color: string
+  breakDuration: number
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface Class {
+  id: string
+  name: string
+  lunchDuration: number
+  academicYear?: string
+  level?: string
+  createdAt: Date
+  updatedAt: Date
 }
 
 // Schedule Store
@@ -508,7 +525,8 @@ export const useEntitiesStore = defineStore('entities', {
     async loadCourses() {
       try {
         const response = await coursesApi.getAll()
-        this.courses = response.data
+        // Courses API returns { courses, total, page, pageSize, totalPages }
+        this.courses = response.courses || []
       } catch (error) {
         console.error('Failed to load courses:', error)
         throw error
@@ -518,7 +536,8 @@ export const useEntitiesStore = defineStore('entities', {
     async loadTeachers() {
       try {
         const response = await teachersApi.getAll()
-        this.teachers = response.data
+        // Teachers API returns { teachers, total, page, pageSize, totalPages }
+        this.teachers = response.teachers || []
       } catch (error) {
         console.error('Failed to load teachers:', error)
         throw error
@@ -528,7 +547,8 @@ export const useEntitiesStore = defineStore('entities', {
     async loadGroups() {
       try {
         const response = await groupsApi.getAll()
-        this.groups = response.data
+        // Groups API returns { data, pagination }
+        this.groups = response.data || []
       } catch (error) {
         console.error('Failed to load groups:', error)
         throw error
@@ -538,7 +558,8 @@ export const useEntitiesStore = defineStore('entities', {
     async loadSubjects() {
       try {
         const response = await subjectsApi.getAll()
-        this.subjects = response.data
+        // Subjects API returns direct array
+        this.subjects = response || []
       } catch (error) {
         console.error('Failed to load subjects:', error)
         throw error

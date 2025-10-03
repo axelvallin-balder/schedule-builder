@@ -665,16 +665,16 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useScheduleStore } from '~/stores/schedule'
-import { useTeacherStore } from '~/stores/teachers'
-import { useGroupStore } from '~/stores/groups'
+import { useTeachersStore } from '~/stores/teachers'
+import { useGroupsStore } from '~/stores/groups'
 import { useRuleStore } from '~/stores/rules'
 import WeeklySchedule from '~/components/schedule/WeeklySchedule.vue'
 import CourseModal from '~/components/modals/CourseModal.vue'
 
 // Store instances
 const scheduleStore = useScheduleStore()
-const teacherStore = useTeacherStore()
-const groupStore = useGroupStore()
+const teacherStore = useTeachersStore()
+const groupStore = useGroupsStore()
 const ruleStore = useRuleStore()
 
 // Workflow state

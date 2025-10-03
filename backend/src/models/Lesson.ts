@@ -26,7 +26,7 @@ export class Lesson {
   @Column()
   duration!: number;
 
-  @Column({ name: 'room_id', nullable: true })
+  @Column({ type: 'varchar', name: 'room_id', nullable: true })
   roomId!: string | null;
 
   @CreateDateColumn({ name: 'created_at' })

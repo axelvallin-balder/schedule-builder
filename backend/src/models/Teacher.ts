@@ -1,36 +1,52 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
-import { Course } from './Course';
-import { Lesson } from './Lesson';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm'
 
-interface WorkingHours {
-  start: string;
-  end: string;
+export interface TeacherAvailability {
+  dayOfWeek: number; // 0 = Sunday, 1 = Monday, etc.
+  startTime: string; // HH:MM format
+  endTime: string;   // HH:MM format
 }
 
 @Entity('teachers')
 export class Teacher {
   @PrimaryGeneratedColumn('uuid')
-  id!: string;
+  id: string
 
-  @Column()
-  name!: string;
+  @Column({ type: 'varchar', length: 255 })
+  name: string
 
-  @Column('simple-array', { name: 'subject_ids' })
-  subjectIds!: string[];
+  @Column({ type: 'varchar', length: 255, unique: true })
+  email: string
 
-  @Column('jsonb', { name: 'working_hours', default: { start: '08:15', end: '16:00' } })
-  workingHours!: WorkingHours;
+  @Column({ type: 'simple-array', default: '' })
+  subjectIds: string[]
 
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt!: Date;
+  @Column({ type: 'jsonb', default: [] })
+  availability: TeacherAvailability[]
 
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt!: Date;
+  @CreateDateColumn()
+  createdAt: Date
 
-  // Relations
-  @OneToMany(() => Course, course => course.teacher)
-  courses?: Course[];
+  @UpdateDateColumn()
+  updatedAt: Date
 
-  @OneToMany(() => Lesson, lesson => lesson.teacher)
-  lessons?: Lesson[];
+  // Getter for compatibility
+  get subjects(): string[] {
+    return this.subjectIds
+  }
+
+  // Setter for compatibility  
+  set subjects(value: string[]) {
+    this.subjectIds = value
+  }
+
+  // Helper method to set default availability (8:15-16:00 Monday-Friday)
+  setDefaultAvailability(): void {
+    this.availability = [
+      { dayOfWeek: 1, startTime: '08:15', endTime: '16:00' }, // Monday
+      { dayOfWeek: 2, startTime: '08:15', endTime: '16:00' }, // Tuesday  
+      { dayOfWeek: 3, startTime: '08:15', endTime: '16:00' }, // Wednesday
+      { dayOfWeek: 4, startTime: '08:15', endTime: '16:00' }, // Thursday
+      { dayOfWeek: 5, startTime: '08:15', endTime: '16:00' }, // Friday
+    ]
+  }
 }

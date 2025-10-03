@@ -48,8 +48,14 @@ async function bootstrap(): Promise<void> {
     await AppDataSource.initialize();
     console.log('Database connection established');
     
-    server.listen(port, () => {
-      console.log(`Server running on port ${port}`);
+    server.listen(Number(port), () => {
+      console.log(`Server running on http://localhost:${port}`);
+      console.log('Health endpoint available at: http://localhost:3001/health');
+      console.log('Teachers API available at: http://localhost:3001/api/teachers');
+    });
+
+    server.on('error', (error) => {
+      console.error('Server error:', error);
     });
   } catch (error) {
     console.error('Failed to start server:', error);

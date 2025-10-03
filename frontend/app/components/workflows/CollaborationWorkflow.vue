@@ -235,7 +235,7 @@
       <!-- Live Chat -->
       <div class="chat-panel" data-testid="chat-panel">
         <h4>Session Chat</h4>
-        <div class="chat-messages" ref="chatMessages">
+        <div class="chat-messages" ref="chatMessagesContainer">
           <div 
             v-for="message in chatMessages" 
             :key="message.id"
@@ -526,7 +526,7 @@ const showCreateSession = ref(false)
 const showJoinSession = ref(false)
 const joinSessionCode = ref('')
 const newMessage = ref('')
-const chatMessages = ref(null)
+const chatMessagesContainer = ref<HTMLElement | null>(null)
 
 // Session data
 const newSessionData = ref({
@@ -662,8 +662,8 @@ const sendMessage = () => {
   
   // Scroll to bottom
   nextTick(() => {
-    if (chatMessages.value) {
-      chatMessages.value.scrollTop = chatMessages.value.scrollHeight
+    if (chatMessagesContainer.value) {
+      chatMessagesContainer.value.scrollTop = chatMessagesContainer.value.scrollHeight
     }
   })
 }
