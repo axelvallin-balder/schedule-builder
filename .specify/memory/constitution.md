@@ -2,17 +2,16 @@
 
 <!--
 SYNC IMPACT REPORT
-Version change: N/A → 1.0.0 (Initial version)
-Modified principles: N/A (Initial creation)
+Version change: 1.0.0 → 1.1.0 (Added API-Database Consistency principle)
+Modified principles: N/A
 Added sections:
-- Core Principles (5 principles)
-- Development Standards
-- Quality Assurance Process
-- Governance
+- VI. API-Database Consistency (new principle)
+Removed sections: N/A
 Templates requiring updates:
-✅ .specify/templates/plan-template.md
-✅ .specify/templates/spec-template.md
-✅ .specify/templates/tasks-template.md
+✅ .specify/templates/plan-template.md (updated Constitution Check section)
+✅ .specify/templates/spec-template.md (already aligned)
+✅ .specify/templates/tasks-template.md (added API-Database consistency rules)
+✅ .github/copilot-instructions.md (added critical guidelines section)
 TODO: None
 -->
 
@@ -70,6 +69,19 @@ All features MUST include:
 - Version compatibility information
 
 Rationale: Documentation ensures maintainability and knowledge transfer.
+
+### VI. API-Database Consistency
+Database models, backend APIs, and frontend stores MUST maintain strict consistency:
+- Database schema changes require corresponding frontend type updates
+- API response formats MUST match frontend store expectations
+- Data model changes require explicit approval and impact assessment
+- Backend entity models MUST be the single source of truth for data structure
+- Frontend API services MUST accurately reflect backend endpoint signatures
+- Any data model modification requires updating all dependent layers (DB → API → Frontend)
+- Avoid changing data models unless specifically requested or critically necessary
+- When data model changes are proposed, request clarification on scope and impact
+
+Rationale: Consistency across the full stack prevents integration issues, reduces debugging time, and ensures reliable data flow throughout the application.
 
 ## Development Standards
 
@@ -134,4 +146,4 @@ Version Control:
 - MINOR: New rules or significant clarifications
 - PATCH: Minor clarifications or corrections
 
-**Version**: 1.0.0 | **Ratified**: 2025-09-29 | **Last Amended**: 2025-09-29
+**Version**: 1.1.0 | **Ratified**: 2025-09-29 | **Last Amended**: 2025-10-03

@@ -112,9 +112,16 @@ Task: "Integration test auth in tests/integration/test_auth.py"
    - Each story → integration test [P]
    - Quickstart scenarios → validation tasks
 
-4. **Ordering**:
-   - Setup → Tests → Models → Services → Endpoints → Polish
+4. **API-Database Consistency**:
+   - Database schema changes → frontend type update tasks
+   - New entity models → API endpoint tasks → frontend store tasks
+   - API response format changes → frontend service update tasks
+   - Cross-layer integration tests (DB → API → Frontend)
+
+5. **Ordering**:
+   - Setup → Tests → Models → Services → Endpoints → Frontend Updates → Polish
    - Dependencies block parallel execution
+   - API-Database consistency checks in integration phase
 
 ## Validation Checklist
 *GATE: Checked by main() before returning*
@@ -125,3 +132,5 @@ Task: "Integration test auth in tests/integration/test_auth.py"
 - [ ] Parallel tasks truly independent
 - [ ] Each task specifies exact file path
 - [ ] No task modifies same file as another [P] task
+- [ ] API-Database consistency tasks included for data model changes
+- [ ] Frontend type updates planned for backend entity changes

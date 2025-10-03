@@ -47,7 +47,38 @@
 ## Constitution Check
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+### I. Code Quality First
+- [ ] Code follows established style guides (TypeScript, Vue.js, Node.js standards)
+- [ ] Design maintains low complexity (no functions >10 cyclomatic complexity)
+- [ ] All public APIs have documentation plan
+
+### II. Comprehensive Testing
+- [ ] TDD approach planned (tests before implementation)
+- [ ] Test strategy covers unit, integration, and e2e
+- [ ] Performance benchmarks identified for critical paths
+
+### III. User Experience Consistency
+- [ ] UI follows established design patterns
+- [ ] Accessibility requirements considered (WCAG 2.1 AA)
+- [ ] Error handling and user feedback planned
+
+### IV. Performance Requirements
+- [ ] Page load targets defined (<2s 95th percentile)
+- [ ] API response targets defined (<200ms 95th percentile)
+- [ ] No blocking operations in UI
+
+### V. Documentation and Maintenance
+- [ ] Technical documentation scope defined
+- [ ] User guides planned
+- [ ] API documentation approach identified
+
+### VI. API-Database Consistency
+- [ ] Database schema changes reviewed for frontend impact
+- [ ] API response formats align with frontend store expectations
+- [ ] Data model changes have explicit approval and impact assessment
+- [ ] Backend entity models serve as single source of truth
+- [ ] Frontend API services accurately reflect backend signatures
+- [ ] Full-stack consistency verification planned (DB → API → Frontend)
 
 ## Project Structure
 
@@ -216,4 +247,4 @@ directories captured above]
 - [ ] Complexity deviations documented
 
 ---
-*Based on Constitution v2.1.1 - See `/memory/constitution.md`*
+*Based on Constitution v1.1.0 - See `.specify/memory/constitution.md`*
