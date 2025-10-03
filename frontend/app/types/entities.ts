@@ -30,11 +30,13 @@ export interface AvailabilityException {
 // Teacher entity with calendar-based constraints
 export interface Teacher extends BaseEntity {
   name: string;
+  email: string;                   // unique email identifier
   subjectIds: string[];            // subjects they can teach
-  workingHours: {
-    start: string;                 // HH:mm format, default: "08:15"
-    end: string;                   // HH:mm format, default: "16:00"
-  };
+  availability: {
+    dayOfWeek: number;             // 0 = Sunday, 1 = Monday, etc.
+    startTime: string;             // HH:mm format
+    endTime: string;               // HH:mm format
+  }[];
   availabilityExceptions?: AvailabilityException[];  // Calendar-based constraints
   maxWeeklyHours?: number;         // Optional teaching capacity limit
 }

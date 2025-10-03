@@ -106,8 +106,10 @@ export const useGroupsStore = defineStore('groups', {
 
       try {
         const response = await groupsApi.create(groupData)
-        this.groups.unshift(response.data)
-        return response.data
+        // Backend returns { data: group, message }
+        const newGroup = response.data
+        this.groups.unshift(newGroup)
+        return newGroup
       } catch (error: any) {
         this.error = error.message || 'Failed to create group'
         console.error('Failed to create group:', error)
@@ -123,11 +125,13 @@ export const useGroupsStore = defineStore('groups', {
 
       try {
         const response = await groupsApi.update(group.id, group)
+        // Backend returns { data: group, message }
+        const updatedGroup = response.data
         const index = this.groups.findIndex(g => g.id === group.id)
         if (index !== -1) {
-          this.groups[index] = response.data
+          this.groups[index] = updatedGroup
         }
-        return response.data
+        return updatedGroup
       } catch (error: any) {
         this.error = error.message || 'Failed to update group'
         console.error('Failed to update group:', error)

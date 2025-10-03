@@ -85,8 +85,9 @@ export const useSubjectsStore = defineStore('subjects', {
 
       try {
         const response = await subjectsApi.create(subjectData)
-        this.subjects.unshift(response.data)
-        return response.data
+        // Backend returns subject object directly
+        this.subjects.unshift(response)
+        return response
       } catch (error: any) {
         this.error = error.message || 'Failed to create subject'
         console.error('Failed to create subject:', error)
@@ -102,11 +103,12 @@ export const useSubjectsStore = defineStore('subjects', {
 
       try {
         const response = await subjectsApi.update(subject.id, subject)
+        // Backend returns subject object directly
         const index = this.subjects.findIndex(s => s.id === subject.id)
         if (index !== -1) {
-          this.subjects[index] = response.data
+          this.subjects[index] = response
         }
-        return response.data
+        return response
       } catch (error: any) {
         this.error = error.message || 'Failed to update subject'
         console.error('Failed to update subject:', error)

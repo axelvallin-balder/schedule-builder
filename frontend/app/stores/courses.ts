@@ -105,8 +105,8 @@ export const useCoursesStore = defineStore('courses', {
 
       try {
         const response = await coursesApi.create(courseData)
-        this.courses.unshift(response.data)
-        return response.data
+        this.courses.unshift(response.course)
+        return response
       } catch (error: any) {
         this.error = error.message || 'Failed to create course'
         console.error('Failed to create course:', error)
@@ -122,11 +122,13 @@ export const useCoursesStore = defineStore('courses', {
 
       try {
         const response = await coursesApi.update(course.id, course)
+        // Backend returns { course }
+        const updatedCourse = response.course
         const index = this.courses.findIndex(c => c.id === course.id)
         if (index !== -1) {
-          this.courses[index] = response.data
+          this.courses[index] = updatedCourse
         }
-        return response.data
+        return updatedCourse
       } catch (error: any) {
         this.error = error.message || 'Failed to update course'
         console.error('Failed to update course:', error)

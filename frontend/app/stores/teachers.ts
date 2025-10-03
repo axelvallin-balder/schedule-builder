@@ -97,8 +97,10 @@ export const useTeachersStore = defineStore('teachers', {
 
       try {
         const response = await teachersApi.create(teacherData)
-        this.teachers.unshift(response.data)
-        return response.data
+        // Backend returns { teacher }
+        const newTeacher = response.teacher
+        this.teachers.unshift(newTeacher)
+        return newTeacher
       } catch (error: any) {
         this.error = error.message || 'Failed to create teacher'
         console.error('Failed to create teacher:', error)
@@ -114,11 +116,13 @@ export const useTeachersStore = defineStore('teachers', {
 
       try {
         const response = await teachersApi.update(teacher.id, teacher)
+        // Backend returns { teacher }
+        const updatedTeacher = response.teacher
         const index = this.teachers.findIndex(t => t.id === teacher.id)
         if (index !== -1) {
-          this.teachers[index] = response.data
+          this.teachers[index] = updatedTeacher
         }
-        return response.data
+        return updatedTeacher
       } catch (error: any) {
         this.error = error.message || 'Failed to update teacher'
         console.error('Failed to update teacher:', error)

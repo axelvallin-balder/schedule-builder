@@ -103,8 +103,8 @@ export const useClassesStore = defineStore('classes', {
 
       try {
         const response = await classesApi.create(classData)
-        this.classes.unshift(response.data)
-        return response.data
+        this.classes.unshift(response)
+        return response
       } catch (error: any) {
         this.error = error.message || 'Failed to create class'
         console.error('Failed to create class:', error)
@@ -122,9 +122,9 @@ export const useClassesStore = defineStore('classes', {
         const response = await classesApi.update(classItem.id, classItem)
         const index = this.classes.findIndex(c => c.id === classItem.id)
         if (index !== -1) {
-          this.classes[index] = response.data
+          this.classes[index] = response
         }
-        return response.data
+        return response
       } catch (error: any) {
         this.error = error.message || 'Failed to update class'
         console.error('Failed to update class:', error)
